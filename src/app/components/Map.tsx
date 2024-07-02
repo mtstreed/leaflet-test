@@ -19,6 +19,8 @@ const defaults = {
 export default function Map(Map: MapProps) {
     const { zoom = defaults.zoom, posix } = Map
 
+    
+
     return (
         <MapContainer
             center={posix}
