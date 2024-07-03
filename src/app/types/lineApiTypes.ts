@@ -22,6 +22,7 @@ export interface LineData {
   exceededTransferLimit: boolean;
   features: Feature[];
 }
+
 export interface Geometry {
   paths: number[][][];
 }
