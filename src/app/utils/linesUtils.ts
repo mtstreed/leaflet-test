@@ -1,13 +1,23 @@
 import { LineData, Attributes, Feature, Field } from '../types/lineApiTypes';
 
-import dotenv from 'dotenv';
-
-dotenv.config();
-const baseUri = process.env.TRANSMISSION_API_BASE_URI;
-
 export async function fetchAllLines(): Promise<LineData> {
-  const response = await fetch(
-    `${baseUri}/US_Electric_Power_Transmission_Lines/FeatureServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=json&resultRecordCount=1`
-  );
-  return response.json();
+	try {
+        const res: Response = await fetch('../api/lines', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        if (!res.ok) {
+            // Attempt to parse the error response
+            const errorData = await res.json();
+            throw new Error(errorData.message || 'Failed to fetch line data.');
+        }
+		const resJson = await res.json();
+		// console.log('utils/linesUtils | fetchAllLines | resJson: ', resJson);
+		return resJson as LineData;
+    } catch (error) {
+        console.log('utils/linesUtils | fetchAllLines | error: ' + error);
+        throw error;
+    }
 }

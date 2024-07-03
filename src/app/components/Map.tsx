@@ -7,6 +7,8 @@ import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import "leaflet-defaulticon-compatibility";
 
+import { fetchAllLines } from "../utils/linesUtils";
+
 interface MapProps {
     posix: LatLngExpression | LatLngTuple,
     zoom?: number,
@@ -14,12 +16,10 @@ interface MapProps {
 
 const defaults = {
     zoom: 19,
-}
+} 
 
 export default function Map(Map: MapProps) {
     const { zoom = defaults.zoom, posix } = Map
-
-    
 
     return (
         <MapContainer
