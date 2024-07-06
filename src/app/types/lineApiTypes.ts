@@ -25,6 +25,8 @@ export interface LineData {
 
 export interface Geometry {
   paths: number[][][];
+  // The coordinates returned by API are in [long, lat] format, but Leaflet expects [lat, long]
+  reversedPaths?: number[][][]; 
 }
 
 export interface Attributes {
