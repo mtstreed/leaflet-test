@@ -54,7 +54,7 @@ export default function Map(Map: MapProps) {
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
 
-            {lines.map((line: Feature) => (
+            {lines && lines.map((line: Feature) => (
                 line.geometry.reversedPaths && ( // Check if reversedPaths is defined.
                     <Polyline 
                         key={line.attributes.OBJECTID}
