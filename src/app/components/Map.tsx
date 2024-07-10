@@ -44,7 +44,7 @@ export default function Map(Map: MapProps) {
         const fetchData = async () => {
             try {
                 // This needs to change to dynamic url
-                const lineData: LineData = await fetchLinesWithinBounds(testLatLngBounds);
+                const lineData: LineData = await fetchLinesWithinBounds(testLatLngBounds); // fetchAllLines(); // 
                 const features: Feature[] = lineData.features;
                 setLines(features);
             } catch (error) {
