@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, Polyline } from "react-leaflet";
-import { LatLngExpression, LatLngTuple } from 'leaflet';
+import { LatLngExpression, LatLngTuple, LatLngBounds } from 'leaflet';
 
 import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import "leaflet-defaulticon-compatibility";
 
+import MapComponent from "./MapComponent";
 import { fetchAllLines } from "../utils/linesUtils";
 import { LineData, Attributes, Feature, Field } from '../types/lineApiTypes';
 
@@ -28,9 +29,17 @@ export default function Map(Map: MapProps) {
 
     const [lines, setLines] = useState<Feature[]>([]);
 
+    // Below is the bounds-related code. Not sure where exactly to put it, or if it works
+    // How do I make sure that when this state changes, the fetchAllLines function is called with the new bounds?
+    // const [bounds, setBounds] = useState<LatLngBounds | null>(null);
+    // const handleBoundsChange = (bounds: LatLngBounds) => {
+    //     setBounds(bounds);
+    // };
+
     useEffect(() => {
         const fetchData = async () => {
             try {
+                // This needs to change to dynamic url
                 const lineData: LineData = await fetchAllLines();
                 const features: Feature[] = lineData.features;
                 setLines(features);
@@ -63,6 +72,7 @@ export default function Map(Map: MapProps) {
                     />
                 )
             ))}
+            {/* <MapComponent onBoundsChange={handleBoundsChange}/> TODO uncomment*/} 
         </MapContainer>
     );
 }

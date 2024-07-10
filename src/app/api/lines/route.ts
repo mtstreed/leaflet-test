@@ -4,6 +4,8 @@ dotenv.config();
 const baseUri = process.env.TRANSMISSION_LINES_BASE_URL;
 
 // This GET request takes dynamic query params to allow for pagination.
+// TODO add functionality to use bounds if they are given (this would use the xmin, ymin, xmax, ymax query params)
+// I guess that would be another if statement, but not sure where.
 export async function GET(req: Request): Promise<Response> {
     const { searchParams } = new URL(req.url);
 
