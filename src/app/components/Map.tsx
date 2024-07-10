@@ -2,15 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, Polyline } from "react-leaflet";
-import { LatLngExpression, LatLngTuple, LatLngBounds } from 'leaflet';
+import { LatLngExpression, LatLngTuple, LatLngBounds, LatLng } from 'leaflet';
 
 import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import "leaflet-defaulticon-compatibility";
 
 import MapComponent from "./MapComponent";
-import { fetchAllLines } from "../utils/linesUtils";
+import { fetchAllLines, fetchLinesWithinBounds } from "../utils/linesUtils";
 import { LineData, Attributes, Feature, Field } from '../types/lineApiTypes';
+import test from "node:test";
 
 
 interface MapProps {
@@ -37,10 +38,13 @@ export default function Map(Map: MapProps) {
     // };
 
     useEffect(() => {
+
+        const testLatLngBounds = new LatLngBounds(new LatLng(41, -75), new LatLng(40, -74)); // TODO delete
+
         const fetchData = async () => {
             try {
                 // This needs to change to dynamic url
-                const lineData: LineData = await fetchAllLines();
+                const lineData: LineData = await fetchLinesWithinBounds(testLatLngBounds);
                 const features: Feature[] = lineData.features;
                 setLines(features);
             } catch (error) {
