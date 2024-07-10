@@ -11,7 +11,6 @@ export async function GET(req: Request): Promise<Response> {
     // Get only the trailing query string from the url, and append it to the API baseUrl.
     const questionMarkIndex = req.url.indexOf('?');
     const reqUrl = questionMarkIndex === -1 ? baseUrl :  baseUrl + req.url.slice(questionMarkIndex);
-    // console.log(`api/lines/route | GET | reqUrl: ${reqUrl}`);
     
     try {
         const res: Response = await fetch(reqUrl, {
