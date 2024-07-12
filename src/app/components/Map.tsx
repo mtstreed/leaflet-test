@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, Polyline } from "react-leaflet";
-import { LatLngExpression, LatLngTuple, LatLngBounds, LatLng } from 'leaflet';
+import { LatLngExpression, LatLngTuple, LatLngBounds, LatLngBoundsExpression, LatLng } from 'leaflet';
 
 import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
@@ -11,53 +11,64 @@ import "leaflet-defaulticon-compatibility";
 import MapComponent from "./MapComponent";
 import { fetchAllLines, fetchLinesWithinBounds } from "../utils/linesUtils";
 import { LineData, Attributes, Feature, Field } from '../types/lineApiTypes';
-import test from "node:test";
 
 
 interface MapProps {
-    posix: LatLngExpression | LatLngTuple,
-    zoom?: number,
+    center: LatLng,
+    zoom: number,
 }
 
 const defaults = {
-    zoom: 19,
+    zoom: 13,
 } 
 
 const redOptions = { color: 'red' }
 
-export default function Map(Map: MapProps) {
-    const { zoom = defaults.zoom, posix } = Map
+export default function Map({ center, zoom }: MapProps) {
 
     const [lines, setLines] = useState<Feature[]>([]);
 
-    // Below is the bounds-related code. Not sure where exactly to put it, or if it works
-    // How do I make sure that when this state changes, the fetchAllLines function is called with the new bounds?
-    // const [bounds, setBounds] = useState<LatLngBounds | null>(null);
-    // const handleBoundsChange = (bounds: LatLngBounds) => {
-    //     setBounds(bounds);
-    // };
+    const [bounds, setBounds] = useState<LatLngBounds | null>(null); // As component mounts, bounds is null.
+    const handleBoundsChange = (bounds: LatLngBounds) => {
+        setBounds(bounds);
+    };
 
+    // First useEffect fetches lines within bounds after mount.
     useEffect(() => {
-
-        const testLatLngBounds = new LatLngBounds(new LatLng(41, -75), new LatLng(40, -74)); // TODO delete
-
         const fetchData = async () => {
             try {
-                // This needs to change to dynamic url
-                const lineData: LineData = await fetchLinesWithinBounds(testLatLngBounds); // fetchAllLines(); // 
+                // Upon mount, fetch lines within 10km of center.
+                const lineData: LineData = await fetchLinesWithinBounds(center.toBounds(10000));
                 const features: Feature[] = lineData.features;
                 setLines(features);
             } catch (error) {
-                console.error("components/Map.tsx | useEffect | Error fetching line data:", error);
+                console.error("components/Map.tsx | useEffect 1 | Error fetching line data:", error);
             }
         };
 
         fetchData();
-    }, []);
+    }, []); // TODO make center dynamic?
+
+    // Second useEffect fetches lines within bounds after bounds change.
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                if (bounds) {
+                    const lineData: LineData = await fetchLinesWithinBounds(bounds);
+                    const features: Feature[] = lineData.features;
+                    setLines(features);
+                }
+            } catch (error) {
+                console.error("components/Map.tsx | useEffect 2 | Error fetching line data:", error);
+            }
+        };
+
+        fetchData();
+    }, [bounds]);
 
     return (
         <MapContainer
-            center={posix}
+            center={center}
             zoom={zoom}
             scrollWheelZoom={true}
             style={{ height: "100%", width: "100%" }}
@@ -76,7 +87,7 @@ export default function Map(Map: MapProps) {
                     />
                 )
             ))}
-            {/* <MapComponent onBoundsChange={handleBoundsChange}/> TODO uncomment*/} 
+            <MapComponent onBoundsChange={handleBoundsChange}/>
         </MapContainer>
     );
 }
