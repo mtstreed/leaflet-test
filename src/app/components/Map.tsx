@@ -1,27 +1,16 @@
 "use client"
 
 import { use, useEffect, useState } from "react";
+import dynamic from 'next/dynamic';
 import { MapContainer, TileLayer, Marker, Popup, Polyline } from "react-leaflet";
 import { LatLngExpression, LatLngTuple, LatLngBounds, LatLngBoundsExpression, LatLng } from 'leaflet';
 
 import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
-// import "leaflet-defaulticon-compatibility";
-import dynamic from 'next/dynamic';
+import "leaflet-defaulticon-compatibility";
 
-// const LeafletStyles = dynamic(() => import('leaflet/dist/leaflet.css?css'), {
-//   ssr: false,
-// });
-
-// const LeafletDefaultIconStyles = dynamic(() => import('leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css'), {
-//   ssr: false,
-// });
-
-// const LeafletDefaultIconCompatibility = dynamic(() => import('leaflet-defaulticon-compatibility'), {
-//   ssr: false,
-// });
-
-import MapComponent from "./MapComponent";
+// import MapComponent from "./MapComponent";
+const MapComponent = dynamic(() => import("./MapComponent"), { ssr: false });
 import { fetchAllLines, fetchLinesWithinBounds } from "../utils/linesUtils";
 import { LineData, Attributes, Feature, Field } from '../types/lineApiTypes';
 
