@@ -37,18 +37,20 @@ export default function Map({ center, zoom }: MapProps) {
 
     // First useEffect fetches lines within bounds after mount.
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                // Upon mount, fetch lines within 10km of center.
-                const lineData: LineData = await fetchLinesWithinBounds(center.toBounds(10000));
-                const features: Feature[] = lineData.features;
-                setLines(features);
-            } catch (error) {
-                console.error("components/Map.tsx | useEffect 1 | Error fetching line data:", error);
-            }
-        };
+        if (typeof window !== 'undefined') {
+            const fetchData = async () => {
+                try {
+                    // Upon mount, fetch lines within 10km of center.
+                    const lineData: LineData = await fetchLinesWithinBounds(center.toBounds(10000));
+                    const features: Feature[] = lineData.features;
+                    setLines(features);
+                } catch (error) {
+                    console.error("components/Map.tsx | useEffect 1 | Error fetching line data:", error);
+                }
+            };
 
-        fetchData();
+            fetchData();
+        }
     }, [center]); // TODO make center dynamic
 
     // Second useEffect fetches lines within bounds after bounds change.
