@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import Map from "./components/Map";
 import dynamic from "next/dynamic";
