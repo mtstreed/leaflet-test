@@ -43,6 +43,7 @@ function parseLineData(lineDataJson: string, prevLineData?: LineData): LineData 
 }
 
 
+// TODO this should be more organized. Add url params more dynamically using a map/object of params.
 // Builds only the trailing query string for the lines/route.ts Route Handler.
 export function buildUrlQuery(params: UrlQueryParams): string {
 	let queryStr = `?where=1%3D1&outFields=*&outSR=4326&f=json&resultOffset=${params.resultOffset}&resultRecordCount=${params.resultRecordCount}`;
