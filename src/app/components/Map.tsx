@@ -7,6 +7,19 @@ import { LatLngExpression, LatLngTuple, LatLngBounds, LatLngBoundsExpression, La
 import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 // import "leaflet-defaulticon-compatibility";
+import dynamic from 'next/dynamic';
+
+// const LeafletStyles = dynamic(() => import('leaflet/dist/leaflet.css?css'), {
+//   ssr: false,
+// });
+
+// const LeafletDefaultIconStyles = dynamic(() => import('leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css'), {
+//   ssr: false,
+// });
+
+// const LeafletDefaultIconCompatibility = dynamic(() => import('leaflet-defaulticon-compatibility'), {
+//   ssr: false,
+// });
 
 import MapComponent from "./MapComponent";
 import { fetchAllLines, fetchLinesWithinBounds } from "../utils/linesUtils";
