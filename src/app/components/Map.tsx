@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import { use, useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, Polyline } from "react-leaflet";
@@ -6,7 +6,7 @@ import { LatLngExpression, LatLngTuple, LatLngBounds, LatLngBoundsExpression, La
 
 import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
-import "leaflet-defaulticon-compatibility";
+// import "leaflet-defaulticon-compatibility";
 
 import MapComponent from "./MapComponent";
 import { fetchAllLines, fetchLinesWithinBounds } from "../utils/linesUtils";
