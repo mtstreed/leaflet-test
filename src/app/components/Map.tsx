@@ -48,26 +48,26 @@ export default function Map({ center, zoom }: MapProps) {
                     console.error("components/Map.tsx | useEffect 1 | Error fetching line data:", error);
                 }
             };
-
             fetchData();
         }
     }, [center]); // TODO make center dynamic
 
     // Second useEffect fetches lines within bounds after bounds change.
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                if (bounds) {
-                    const lineData: LineData = await fetchLinesWithinBounds(bounds);
-                    const features: Feature[] = lineData.features;
-                    setLines(features);
+        if (typeof window !== 'undefined') {
+            const fetchData = async () => {
+                try {
+                    if (bounds) {
+                        const lineData: LineData = await fetchLinesWithinBounds(bounds);
+                        const features: Feature[] = lineData.features;
+                        setLines(features);
+                    }
+                } catch (error) {
+                    console.error("components/Map.tsx | useEffect 2 | Error fetching line data:", error);
                 }
-            } catch (error) {
-                console.error("components/Map.tsx | useEffect 2 | Error fetching line data:", error);
-            }
-        };
-
-        fetchData();
+            };
+            fetchData();
+        }
     }, [bounds]);
 
     return (
