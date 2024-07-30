@@ -1,6 +1,7 @@
 "use client"
 
-import Map from "./components/Map";
+// import Map from "./components/Map";
+const Map = dynamic(() => import("./components/Map"), { ssr: false });
 import dynamic from "next/dynamic";
 import { useMemo } from "react";
 import { LatLngExpression, LatLngTuple, LatLngBounds, LatLngBoundsExpression, LatLng } from 'leaflet';
