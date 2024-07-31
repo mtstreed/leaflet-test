@@ -1,22 +1,21 @@
 "use client"
 
-import { use, useEffect, useState } from "react";
-import dynamic from 'next/dynamic';
-import { MapContainer, TileLayer, Marker, Popup, Polyline } from "react-leaflet";
-import { LatLngExpression, LatLngTuple, LatLngBounds, LatLngBoundsExpression, LatLng } from 'leaflet';
+
+import { useEffect, useState } from "react";
+import { MapContainer, TileLayer, Polyline } from "react-leaflet";
+import { LatLngTuple, LatLngBounds, LatLng } from 'leaflet';
 
 import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import "leaflet-defaulticon-compatibility";
 
-// import MapComponent from "./MapComponent";
-const MapComponent = dynamic(() => import("./MapComponent"), { ssr: false });
-import { fetchAllLines, fetchLinesWithinBounds } from "../utils/linesUtils";
-import { LineData, Attributes, Feature, Field } from '../types/lineApiTypes';
+import MapComponent from "./MapComponent";
+import { fetchLinesWithinBounds } from "../utils/linesUtils";
+import { LineData, Feature } from '../types/lineApiTypes';
 
 
 interface MapProps {
-    center: LatLng,
+    centerCoords: number[],
     zoom: number,
 }
 
@@ -26,7 +25,9 @@ const defaults = {
 
 const redOptions = { color: 'red' }
 
-export default function Map({ center, zoom }: MapProps) {
+export default function Map({ centerCoords, zoom }: MapProps) {
+
+    const center: LatLng = new LatLng(centerCoords[0], centerCoords[1]);
 
     const [lines, setLines] = useState<Feature[]>([]);
 
