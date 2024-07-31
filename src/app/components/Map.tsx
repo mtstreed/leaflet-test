@@ -51,7 +51,7 @@ export default function Map({ centerCoords, zoom }: MapProps) {
             };
             fetchData();
         }
-    }, [center]); // TODO make center dynamic
+    }, []); // TODO make center dynamic
 
     // Second useEffect fetches lines within bounds after bounds change.
     useEffect(() => {
