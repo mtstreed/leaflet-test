@@ -38,37 +38,35 @@ export default function Map({ centerCoords, zoom }: MapProps) {
 
     // First useEffect fetches lines within bounds after mount.
     useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const fetchData = async () => {
-                try {
-                    // Upon mount, fetch lines within 10km of center.
-                    const lineData: LineData = await fetchLinesWithinBounds(center.toBounds(10000));
-                    const features: Feature[] = lineData.features;
-                    setLines(features);
-                } catch (error) {
-                    console.error("components/Map.tsx | useEffect 1 | Error fetching line data:", error);
-                }
-            };
-            fetchData();
-        }
-    }, [center]); // TODO make center dynamic
+        const fetchData = async () => {
+            console.log("components/Map.tsx | useEffect 1 | Fetching line data...");
+            try {
+                // Upon mount, fetch lines within 10km of center.
+                const lineData: LineData = await fetchLinesWithinBounds(center.toBounds(10000));
+                const features: Feature[] = lineData.features;
+                setLines(features);
+            } catch (error) {
+                console.error("components/Map.tsx | useEffect 1 | Error fetching line data:", error);
+            }
+        };
+        fetchData();
+    }, []); // TODO make center dynamic
 
     // Second useEffect fetches lines within bounds after bounds change.
     useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const fetchData = async () => {
-                try {
-                    if (bounds) {
-                        const lineData: LineData = await fetchLinesWithinBounds(bounds);
-                        const features: Feature[] = lineData.features;
-                        setLines(features);
-                    }
-                } catch (error) {
-                    console.error("components/Map.tsx | useEffect 2 | Error fetching line data:", error);
+        const fetchData = async () => {
+            console.log("components/Map.tsx | useEffect 2 | Fetching line data...");
+            try {
+                if (bounds) {
+                    const lineData: LineData = await fetchLinesWithinBounds(bounds);
+                    const features: Feature[] = lineData.features;
+                    setLines(features);
                 }
-            };
-            fetchData();
-        }
+            } catch (error) {
+                console.error("components/Map.tsx | useEffect 2 | Error fetching line data:", error);
+            }
+        };
+        fetchData();
     }, [bounds]);
 
     return (
