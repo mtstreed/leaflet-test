@@ -40,8 +40,8 @@ export default function Map({ centerCoords, zoom }: MapProps) {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // Upon mount, fetch lines within 10km of center.
-                const lineData: LineData = await fetchLinesWithinBounds(center.toBounds(10000));
+                // Upon mount, fetch lines within 50km of center.
+                const lineData: LineData = await fetchLinesWithinBounds(center.toBounds(50000));
                 const features: Feature[] = lineData.features;
                 setLines(features);
             } catch (error) {
@@ -73,12 +73,12 @@ export default function Map({ centerCoords, zoom }: MapProps) {
             zoom={zoom}
             scrollWheelZoom={true}
             style={{ height: "100%", width: "100%" }}
-        >
+        >            
             <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-
+            
             {lines && lines.map((line: Feature) => (
                 line.geometry.reversedPaths && ( // Check if reversedPaths is defined.
                     <Polyline 
