@@ -39,7 +39,6 @@ export default function Map({ centerCoords, zoom }: MapProps) {
     // First useEffect fetches lines within bounds after mount.
     useEffect(() => {
         const fetchData = async () => {
-            console.log("components/Map.tsx | useEffect 1 | Fetching line data...");
             try {
                 // Upon mount, fetch lines within 10km of center.
                 const lineData: LineData = await fetchLinesWithinBounds(center.toBounds(10000));
@@ -55,7 +54,6 @@ export default function Map({ centerCoords, zoom }: MapProps) {
     // Second useEffect fetches lines within bounds after bounds change.
     useEffect(() => {
         const fetchData = async () => {
-            console.log("components/Map.tsx | useEffect 2 | Fetching line data...");
             try {
                 if (bounds) {
                     const lineData: LineData = await fetchLinesWithinBounds(bounds);
