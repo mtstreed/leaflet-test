@@ -30,19 +30,18 @@ export default function Map({ centerCoords, zoom }: MapProps) {
     const center: LatLng = new LatLng(centerCoords[0], centerCoords[1]);
 
     const [lines, setLines] = useState<Feature[]>([]);
-
     const [bounds, setBounds] = useState<LatLngBounds | null>(null); // As component mounts, bounds is null.
-    const handleBoundsChange = (bounds: LatLngBounds) => {
+
+    const handleBoundsChange = (bounds: LatLngBounds | null) => {
         setBounds(bounds);
     };
 
     // First useEffect fetches lines within bounds after mount.
     useEffect(() => {
         const fetchData = async () => {
-            console.log("components/Map.tsx | useEffect 1 | Fetching line data...");
             try {
-                // Upon mount, fetch lines within 10km of center.
-                const lineData: LineData = await fetchLinesWithinBounds(center.toBounds(10000));
+                // Upon mount, fetch lines within 50km of center.
+                const lineData: LineData = await fetchLinesWithinBounds(center.toBounds(50000));
                 const features: Feature[] = lineData.features;
                 setLines(features);
             } catch (error) {
@@ -55,12 +54,13 @@ export default function Map({ centerCoords, zoom }: MapProps) {
     // Second useEffect fetches lines within bounds after bounds change.
     useEffect(() => {
         const fetchData = async () => {
-            console.log("components/Map.tsx | useEffect 2 | Fetching line data...");
             try {
                 if (bounds) {
                     const lineData: LineData = await fetchLinesWithinBounds(bounds);
                     const features: Feature[] = lineData.features;
                     setLines(features);
+                } else {
+                    setLines([]);
                 }
             } catch (error) {
                 console.error("components/Map.tsx | useEffect 2 | Error fetching line data:", error);
@@ -73,14 +73,15 @@ export default function Map({ centerCoords, zoom }: MapProps) {
         <MapContainer
             center={center}
             zoom={zoom}
+            // wheelDebounceTime={300}
             scrollWheelZoom={true}
             style={{ height: "100%", width: "100%" }}
-        >
+        >            
             <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-
+            
             {lines && lines.map((line: Feature) => (
                 line.geometry.reversedPaths && ( // Check if reversedPaths is defined.
                     <Polyline 
