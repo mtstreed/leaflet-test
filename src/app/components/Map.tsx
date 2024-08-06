@@ -19,18 +19,14 @@ interface MapProps {
     zoom: number,
 }
 
-const defaults = {
-    zoom: 13,
-} 
-
-const redOptions = { color: 'red' }
+const lineOptions = { color: 'yellow', weight: 1 }
 
 export default function Map({ centerCoords, zoom }: MapProps) {
 
     const center: LatLng = new LatLng(centerCoords[0], centerCoords[1]);
 
     const [lines, setLines] = useState<Feature[]>([]);
-    const [bounds, setBounds] = useState<LatLngBounds | null>(null); // As component mounts, bounds is null.
+    const [bounds, setBounds] = useState<LatLngBounds | null>(null); // The Map's boundaries.
 
     const handleBoundsChange = (bounds: LatLngBounds | null) => {
         setBounds(bounds);
@@ -76,17 +72,18 @@ export default function Map({ centerCoords, zoom }: MapProps) {
             // wheelDebounceTime={300}
             scrollWheelZoom={true}
             style={{ height: "100%", width: "100%" }}
-        >            
+        >
             <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='<a href="https://carto.com/attributions">CARTO</a>, <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png"
+                opacity={0.8}
             />
             
             {lines && lines.map((line: Feature) => (
                 line.geometry.reversedPaths && ( // Check if reversedPaths is defined.
                     <Polyline 
                         key={line.attributes.OBJECTID}
-                        pathOptions={redOptions}
+                        pathOptions={lineOptions}
                         positions={line.geometry.reversedPaths[0] as LatLngTuple[]} 
                     />
                 )
