@@ -20,7 +20,6 @@ export default function MapComponent({ onBoundsChange }: MapComponentProps) {
     const zoomBoundary = useRef<number>(9);
     const toastShown = useRef<boolean>(false);
     
-    // Add event listeners to the map.
     useMapEvents({
         moveend: () => handleBoundsChange() // moveend event captures both zoom and pan.
     });
@@ -28,13 +27,12 @@ export default function MapComponent({ onBoundsChange }: MapComponentProps) {
   
     // TODO Continuous mousewheel zooming sometimes causes bug where lines from previous bounds are still shown.
     // Potential fix: Add a debounce to the handleBoundsChange function.
+    // Or: if zoom level is lower than boundary, set bounds to null. Idk if this would fix the timing problem though.
     const handleBoundsChange = () => {
         newZoomLevel.current = map.getZoom();
         
-        // On bounds change, if zoom level is greater than boundary, update bounds and reset toastShown.
-        // Else if zoom level is lower than boundary, nullify bounds (which will also setLines 
-        // to empty [] in the parent component) and show toast (but only the first time).
-        // Then reassign current zoom level.
+        // On bounds change, if zoom level is greater than boundary, update bounds and set toastShown to false.
+        // Else if zoom level is lower than boundary, nullify bounds and update old zoom level.
         if (newZoomLevel.current > zoomBoundary.current) {
             const newBounds = map.getBounds();
             onBoundsChange(newBounds);
