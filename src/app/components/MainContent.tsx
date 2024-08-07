@@ -5,7 +5,6 @@ import dynamic from "next/dynamic";
 const Map = dynamic(() => import("./Map"), { ssr: false });
 
 export default function MainContent() {
-    console.log('components/MainContent.tsx | MainContent | Rendering MainContent');
     return(
         <div className="flex flex-col p-10 justify-start h-screen w-screen">
 
