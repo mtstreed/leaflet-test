@@ -3,9 +3,9 @@
 // Even with "use client" directive, Map component must use dynamic import to avoid server-side rendering.
 import dynamic from "next/dynamic";
 const Map = dynamic(() => import("./Map"), { ssr: false });
-import toast from "react-hot-toast";
 
 export default function MainContent() {
+    console.log('components/MainContent.tsx | MainContent | Rendering MainContent');
     return(
         <div className="flex flex-col p-10 justify-start h-screen w-screen">
 
