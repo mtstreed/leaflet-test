@@ -1,14 +1,12 @@
 "use client"
 
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { MapContainer, TileLayer, Polyline } from "react-leaflet";
 import { LatLngTuple, LatLngBounds, LatLng } from 'leaflet';
-
 import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import "leaflet-defaulticon-compatibility";
-
 import MapComponent from "./MapComponent";
 import { fetchLinesWithinBounds } from "../utils/linesUtils";
 import { LineData, Feature } from '../types/lineApiTypes';
@@ -19,47 +17,40 @@ interface MapProps {
     zoom: number,
 }
 
+
 const lineOptions = { color: 'yellow', weight: 1 }
+
 
 export default function Map({ centerCoords, zoom }: MapProps) {
 
     const center: LatLng = new LatLng(centerCoords[0], centerCoords[1]);
+    const startingBounds = center.toBounds(50000); // Get bounds of 50km around center.
 
     const [lines, setLines] = useState<Feature[]>([]);
-    const [bounds, setBounds] = useState<LatLngBounds | null>(null); // The Map's boundaries.
+    const [bounds, setBounds] = useState<LatLngBounds | null>(startingBounds);
+    const fetchIdRef = useRef(0);
 
     const handleBoundsChange = (bounds: LatLngBounds | null) => {
         setBounds(bounds);
     };
 
-    // First useEffect fetches lines within bounds after mount.
     useEffect(() => {
         const fetchData = async () => {
-            try {
-                // Upon mount, fetch lines within 50km of center.
-                const lineData: LineData = await fetchLinesWithinBounds(center.toBounds(50000));
-                const features: Feature[] = lineData.features;
-                setLines(features);
-            } catch (error) {
-                console.error("components/Map.tsx | useEffect 1 | Error fetching line data:", error);
-            }
-        };
-        fetchData();
-    }, []); // TODO make center dynamic
-
-    // Second useEffect fetches lines within bounds after bounds change.
-    useEffect(() => {
-        const fetchData = async () => {
+            const fetchId = ++fetchIdRef.current;
             try {
                 if (bounds) {
                     const lineData: LineData = await fetchLinesWithinBounds(bounds);
                     const features: Feature[] = lineData.features;
-                    setLines(features);
+                    if (fetchId === fetchIdRef.current) {
+                        setLines(features);
+                    }
                 } else {
                     setLines([]);
                 }
             } catch (error) {
-                console.error("components/Map.tsx | useEffect 2 | Error fetching line data:", error);
+                if (fetchId === fetchIdRef.current) {
+                    console.error("components/Map.tsx | useEffect | Error fetching line data:", error);
+                }
             }
         };
         fetchData();
@@ -69,7 +60,6 @@ export default function Map({ centerCoords, zoom }: MapProps) {
         <MapContainer
             center={center}
             zoom={zoom}
-            // wheelDebounceTime={300}
             scrollWheelZoom={true}
             style={{ height: "100%", width: "100%" }}
         >
@@ -79,7 +69,7 @@ export default function Map({ centerCoords, zoom }: MapProps) {
                 opacity={0.8}
             />
             
-            {lines && lines.map((line: Feature) => (
+            {lines && lines.length > 0 && lines.map((line: Feature) => (
                 line.geometry.reversedPaths && ( // Check if reversedPaths is defined.
                     <Polyline 
                         key={line.attributes.OBJECTID}
